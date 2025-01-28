@@ -15,7 +15,7 @@ public class OrderController {
         this.orderService = orderService;
     }
     @PostMapping(value = "/create",consumes = "application/json")
-    public ResponseEntity<OrderDto> createNewOrder(@RequestBody Orders orderDetails){
+    public ResponseEntity<OrderDto> createNewOrder(@RequestBody Orders orderDetails) throws Exception {
         return ResponseEntity.ok(orderService.createNewOrder(orderDetails));
     }
     @GetMapping(value = "/{id}/get",produces = "application/json")

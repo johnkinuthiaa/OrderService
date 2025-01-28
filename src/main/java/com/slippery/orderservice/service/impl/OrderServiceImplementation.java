@@ -1,5 +1,7 @@
 package com.slippery.orderservice.service.impl;
 
+import com.slippery.orderservice.client.InventoryClient;
+import com.slippery.orderservice.client.InventoryDto;
 import com.slippery.orderservice.dto.OrderDto;
 import com.slippery.orderservice.models.OrderStatus;
 import com.slippery.orderservice.models.Orders;
@@ -14,21 +16,32 @@ import java.util.Optional;
 @Service
 public class OrderServiceImplementation implements OrderService {
     private final OrderRepository orderRepository;
+    private final InventoryClient client;
 
-    public OrderServiceImplementation(OrderRepository orderRepository) {
+    public OrderServiceImplementation(OrderRepository orderRepository, InventoryClient client) {
         this.orderRepository = orderRepository;
+        this.client = client;
     }
 
     @Override
-    public OrderDto createNewOrder(Orders orderDetails) {
+    public OrderDto createNewOrder(Orders orderDetails)  {
+        InventoryDto inventoryDto =client.checkInStock(orderDetails.getSkuCode(),orderDetails.getItemsOrdered());
         OrderDto response =new OrderDto();
-        orderDetails.setStatus(OrderStatus.PENDING.name());
-        orderRepository.save(orderDetails);
-        response.setMessage("Order created");
-        log.info("order created");
-        response.setStatusCode(200);
-        response.setOrder(orderDetails);
-        return response;
+        if(inventoryDto.isInStock()){
+            log.info(inventoryDto.getMessage());
+            orderDetails.setStatus(OrderStatus.PENDING.name());
+            orderRepository.save(orderDetails);
+            response.setMessage("Order created");
+            log.info("order created");
+            response.setStatusCode(200);
+            response.setOrder(orderDetails);
+            return response;
+        }else{
+            response.setMessage(inventoryDto.getMessage());
+            return response;
+        }
+
+
     }
 
     @Override
