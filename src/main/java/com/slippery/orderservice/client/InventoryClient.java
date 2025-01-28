@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface InventoryClient {
 
     @RequestMapping(method = RequestMethod.GET,value = "/check-stock")
-    InventoryDto checkInStock(@RequestParam String code,@RequestParam Long quantity);
+    InventoryDto checkInStock(@RequestParam String skuCode,@RequestParam Long quantity);
 }

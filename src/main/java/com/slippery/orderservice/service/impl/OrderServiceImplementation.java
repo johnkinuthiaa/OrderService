@@ -35,11 +35,10 @@ public class OrderServiceImplementation implements OrderService {
             log.info("order created");
             response.setStatusCode(200);
             response.setOrder(orderDetails);
-            return response;
         }else{
             response.setMessage(inventoryDto.getMessage());
-            return response;
         }
+        return response;
 
 
     }
