@@ -25,9 +25,10 @@ public class OrderServiceImplementation implements OrderService {
 
     @Override
     public OrderDto createNewOrder(Orders orderDetails)  {
-        InventoryDto inventoryDto =client.checkInStock(orderDetails.getSkuCode(),orderDetails.getItemsOrdered());
+        InventoryDto checkInStock =client.checkInStock(orderDetails.getSkuCode(),orderDetails.getItemsOrdered());
         OrderDto response =new OrderDto();
-        if(inventoryDto.isInStock()){
+        if(checkInStock.isInStock()){
+            InventoryDto inventoryDto =client.updateInventoryItemsQuantity(orderDetails.getSkuCode(),orderDetails.getItemsOrdered());
             log.info(inventoryDto.getMessage());
             orderDetails.setStatus(OrderStatus.PENDING.name());
             orderRepository.save(orderDetails);
@@ -36,7 +37,8 @@ public class OrderServiceImplementation implements OrderService {
             response.setStatusCode(200);
             response.setOrder(orderDetails);
         }else{
-            response.setMessage(inventoryDto.getMessage());
+            response.setMessage(checkInStock.getMessage());
+            response.setStatusCode(204);
         }
         return response;
 

@@ -1,5 +1,6 @@
 package com.slippery.orderservice.controller;
 
+import com.slippery.orderservice.client.DogClient;
 import com.slippery.orderservice.dto.OrderDto;
 import com.slippery.orderservice.models.Orders;
 import com.slippery.orderservice.service.OrderService;
@@ -10,9 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/orders")
 public class OrderController {
     private final OrderService orderService;
+    private final DogClient dogClient;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, DogClient dogClient) {
         this.orderService = orderService;
+        this.dogClient = dogClient;
     }
     @PostMapping(value = "/create",consumes = "application/json")
     public ResponseEntity<OrderDto> createNewOrder(@RequestBody Orders orderDetails) throws Exception {
@@ -25,5 +28,9 @@ public class OrderController {
     @DeleteMapping("/delete")
     public ResponseEntity<OrderDto> delete(@RequestParam Long id) {
         return ResponseEntity.ok(orderService.deleteById(id));
+    }
+    @GetMapping("/dogs")
+    public ResponseEntity<Object> getDog(){
+        return ResponseEntity.ok(dogClient.fetchDogImage());
     }
 }

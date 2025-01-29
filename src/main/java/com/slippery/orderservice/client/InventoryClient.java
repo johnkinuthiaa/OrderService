@@ -10,4 +10,7 @@ public interface InventoryClient {
 
     @RequestMapping(method = RequestMethod.GET,value = "/check-stock")
     InventoryDto checkInStock(@RequestParam String skuCode,@RequestParam Long quantity);
+
+    @RequestMapping(method = RequestMethod.PUT,value="/update/items")
+    InventoryDto updateInventoryItemsQuantity(@RequestParam String skuCode,@RequestParam Long quantity);
 }
